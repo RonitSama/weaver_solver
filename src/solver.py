@@ -119,7 +119,7 @@ def get_matches(word: str, skip: int = None) -> list[str]:
         matches = {poss_match for poss_match in matches if not re.match(pattern.upper(), poss_match)}
     
     # prioritize matches that get green
-    matches = sorted(list(matches), key=lambda x: find_green(x), reverse=True)
+    matches = sorted(list(matches), key=find_green, reverse=True)
 
     return matches
 
