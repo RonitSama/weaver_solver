@@ -4,7 +4,7 @@ from pprint import pformat
 from functools import lru_cache
 from node import Node
 from solve_on_site import SiteSolver
-from word_bank_test import bank
+from word_bank import bank
 
 NUM_LETTERS = 4
 root: Node
