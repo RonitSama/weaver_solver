@@ -4,7 +4,7 @@ from pprint import pformat
 from functools import lru_cache
 from node import Node
 from solve_on_site import SiteSolver
-from word_bank import bank
+from word_bank_test import bank
 
 NUM_LETTERS = 4
 root: Node
@@ -71,7 +71,7 @@ def main():
                     break
             except ValueError:
                 # fix wrong answer
-                bank.remove(solver.get_incorrect_word().lower())
+                bank.pop(solver.get_incorrect_word().lower(), None)
                 with open('word_bank.py', 'w') as bank_update:
                     bank_update.write(f'bank = [\n {pformat(bank)[1:]}')
                 solver.delete_all(len(root))
@@ -112,28 +112,14 @@ def find_difference(word_1: str, word_2: str) -> int:
 
 
 @lru_cache
-def find_matches(word: str, skip: int = None) -> list[str]:
-    matches = []
-
-    # go through each index (4)
-    for i in range(NUM_LETTERS):
-        if i == skip:
-            continue
-
-        # find matches
-        pattern = f'{word[:i]}.{word[i+1:]}'
-        matches.extend([word.upper() for word in bank if
-                        re.match(pattern.lower(), word) and
-                        word.upper() != word and
-                        word.upper() not in root.as_list() and
-                        not word.upper() == root.value])
-
+def get_matches(word: str, skip: int = None) -> list[str]:
+    matches = bank[word.lower()].copy()
+    if skip is not None and 0 <= skip <= 3:
+        pattern = f'{word[:skip]}.{word[skip+1:]}'
+        matches = {poss_match for poss_match in matches if not re.match(pattern.upper(), poss_match)}
+    
     # prioritize matches that get green
-    num_green = [find_green(match) for match in matches]
-    for i in range(len(matches)):
-        for j in range(len(matches)):
-            if num_green[j] > num_green[i]:
-                matches[i], matches[j] = matches[j], matches[i]
+    matches = sorted(list(matches), key=lambda x: find_green(x), reverse=True)
 
     return matches
 
@@ -141,16 +127,18 @@ def find_matches(word: str, skip: int = None) -> list[str]:
 def solve(current_word: str, current_path_length: int = 0, index_just_changed: int = 5, test: bool = False):
     global optimal, solved, not_good_path, trying, poss_found, root
 
+    # only executed once a solution is found, but hasn't been
+    # truly tested
     if test:
         solved = True
         root.set_path(trying)
+
+        # solution goes in solution.txt
         with open('solution.txt', 'w') as solution:
             solution.write(f'{root}\n')
 
     if solved:
         return
-
-    matches = []
 
     # if end_word is reached, end
     if current_word == end_word:
@@ -161,10 +149,18 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
     if solved:
         return
 
+    # if the current path won't reach the end word in the optimal, stop
     if current_path_length >= optimal - 2 and find_green(current_word) == 0:
         return True
 
-    if len(root) == optimal - 1 and find_green(root.get_value_at(-1)) == 3 and not solved:
+    # solution is found
+    if len(root) == optimal - 1 and \
+        find_green(root.get_value_at(-1)) == 3 and \
+            not solved:
+        # if condition explained:
+        # current path length is 1 away from the optimal and the number
+        # of green letters in the current word is 1 away from being the
+        # final word, the solution is found
         solved = True
         root.add_node(end_word)
         with open('solution.txt', 'w') as solution:
@@ -172,7 +168,10 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
         return
 
     # if current path length is the optimal, end and go back
+    # if it was the correct path, it would have been solved 1 recursive
+    # call before
     if current_path_length >= optimal:
+
         # if the path is 1 away, save it for next optimal
         if find_green(current_word) == 3:
             if not poss_found:
@@ -181,32 +180,45 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
 
         return
 
-    matches = find_matches(current_word, index_just_changed)
+    # current path is still okay, but not solved
+    # so find next words to continue checking
+    matches = get_matches(current_word, index_just_changed)
 
     # iterate each match
     for match in matches:
+
+        # handling recursion mismatch
         if find_difference(root.get_value_at(-1), match) != 1:
+            # if the matches don't match the last word in the Linked
+            # List, flow of control is incorrect
             return
 
         # add a new node containing the current word
         root.add_node(match)
 
-        not_good_path = solve(match, len(
-            root), find_changed_index(match, current_word))
+        # easiest way to communicate between recursive calls
+        not_good_path = solve(match, len(root),
+                              find_changed_index(match, current_word))
         if not_good_path is not None:
             break
-        if solved:
+
+        # many (if solved: return)'s all across function
+        # 
+        if solved: 
             return
 
+        # still in loop, so cut off current match being checked to
+        # allow for checking next match
         root.cut_nodes_at(value_to_remove=match)
 
     if solved:
         return
 
-    # cut nodes off
+    # cut nodes off, current word is incorrect
     root.cut_nodes_at(value_to_remove=current_word,
                       keep=not_good_path)
 
+    # increments optimal after every path is checked
     if current_word == start_word:
         optimal += 1
         solve(start_word, 0, test=True if trying is not None and len(
