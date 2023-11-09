@@ -73,7 +73,7 @@ def main():
                 # fix wrong answer
                 bank.pop(solver.get_incorrect_word().lower(), None)
                 with open('word_bank.py', 'w') as bank_update:
-                    bank_update.write(f'bank = [\n {pformat(bank)[1:]}')
+                    bank_update.write('bank = {{\n {}'.format(pformat(bank)[1:]))
                 solver.delete_all(len(root))
         else:
             break
