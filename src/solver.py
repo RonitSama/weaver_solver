@@ -7,6 +7,7 @@ from solve_on_site import SiteSolver
 from word_bank import bank
 
 NUM_LETTERS = 4
+interval: int
 root: Node
 start_word: str
 end_word: str
@@ -116,7 +117,7 @@ def get_matches(word: str, skip: int = None) -> list[str]:
     matches = bank[word.lower()].copy()
     if skip is not None and 0 <= skip <= 3:
         pattern = f'{word[:skip]}.{word[skip+1:]}'
-        matches = {poss_match for poss_match in matches if not re.match(pattern.upper(), poss_match) and poss_match in bank}
+        matches = {poss_match for poss_match in matches if ((not re.match(pattern.upper(), poss_match)) and poss_match.lower() in bank)}
     
     # prioritize matches that get green
     matches = sorted(list(matches), key=find_green, reverse=True)
@@ -203,7 +204,6 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
             break
 
         # many (if solved: return)'s all across function
-        # 
         if solved: 
             return
 
