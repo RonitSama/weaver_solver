@@ -11,7 +11,7 @@ ELSE, Selenium package is REQUIRED from ([https://pypi.org/project/selenium/]([u
 
 Final solution will be in /src/solution.txt once /src/solver.py is run. If not, make sure the terminal directory is whatever directory all the code is in and run it again. If using Chromedriver, solution will automatically begin inserting into [https://wordwormdormdork.com/](url) once found. Incorrect answers are possible because Weaver's word bank is not public so this program uses nearly every 4-letter word in the English language. If encountered, the solver handles it (removes the incorrect word from the word bank and re-solves) if and only if Chromedriver and Selenium are being used. The incorrect word will never be considered again, as it is permanently removed from /src/word_bank.py.
 
-PLEASE do not click off of Chrome while the program is running, the website will open an ad that the program cannot deal with and the program will crash unhandled. These ads are outside of Selenium's capabilities to deal with, so there is no clear workaround other than: don't click off.
+PLEASE do not click off of Chrome while the program is running, the website may open an ad that the program cannot deal with and the program will crash unhandled. These ads are outside of Selenium's capabilities to deal with, so there is no clear workaround other than: don't click off.
 
 
 Please enjoy!
