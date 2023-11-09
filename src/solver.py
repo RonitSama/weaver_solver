@@ -116,7 +116,7 @@ def get_matches(word: str, skip: int = None) -> list[str]:
     matches = bank[word.lower()].copy()
     if skip is not None and 0 <= skip <= 3:
         pattern = f'{word[:skip]}.{word[skip+1:]}'
-        matches = {poss_match for poss_match in matches if not re.match(pattern.upper(), poss_match)}
+        matches = {poss_match for poss_match in matches if not re.match(pattern.upper(), poss_match) and poss_match in bank}
     
     # prioritize matches that get green
     matches = sorted(list(matches), key=find_green, reverse=True)
