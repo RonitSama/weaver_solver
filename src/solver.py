@@ -55,10 +55,8 @@ def main():
 
         # solve
         solve(start_word, 0)
-        if hasattr(solve, 'recursion'):
-            del solve.recursion
 
-        # found optimal goes in terminal
+        # the found optimal goes in terminal
         print(len(root))
 
         if 'solver' in locals():
@@ -204,6 +202,7 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
             break
 
         # many (if solved: return)'s all across function
+        # to allow immediate return to main()
         if solved: 
             return
 
