@@ -13,7 +13,7 @@ Classes:
 
 
 from sys import setrecursionlimit
-setrecursionlimit(100_000)
+setrecursionlimit(1_000_000)
 del setrecursionlimit
 
 
@@ -101,9 +101,8 @@ class Node:
         '''
 
         if value_to_remove is not None:
-            value_to_remove = value_to_remove.upper()
             self.cut_nodes_at(
-                depth_to_remove=self.get_depth_of(value_to_remove), keep=keep)
+                depth_to_remove=self.get_depth_of(value_to_remove.upper()), keep=keep)
 
         if depth_to_remove is not None:
             if keep:
