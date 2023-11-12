@@ -1,7 +1,7 @@
 # weaver_solver
 A functional solver for the widely-played word game Weaver at https://wordwormdormdork.com/. Programmed in CPython.
 
-The simplest analogy for Weaver is a word ladder. The starting and ending words are given, and the task is to come up with words to connect them. The trick is that each succeeding word may only have only a one-letter difference. For example, a valid word to follow "same" is "fame", and an invalid word would be "fume". To get to "fume", you would need to have "same" -> "fame" -> "fume".
+The simplest analogy for Weaver is a word ladder. The starting and ending words are given, and the task is to come up with words to connect them. The trick is that each succeeding word may only have a one-letter difference. For example, a valid word to follow "same" is "fame", and an invalid word would be "fume". To get to "fume", you would need to have "same" -> "fame" -> "fume".
 
 /src/solver.py is the main file to run. Make sure to change the path to your Chromedriver in /src/solve_on_site.py.
 
