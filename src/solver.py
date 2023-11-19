@@ -55,8 +55,10 @@ def main():
 
         # solve
         solve(start_word, 0)
+        if hasattr(solve, 'recursion'):
+            del solve.recursion
 
-        # the found optimal goes in terminal
+        # found optimal goes in terminal
         print(len(root))
 
         if 'solver' in locals():
@@ -110,7 +112,7 @@ def find_difference(word_1: str, word_2: str) -> int:
     return diff
 
 
-@lru_cache
+# @lru_cache
 def get_matches(word: str, skip: int = None) -> list[str]:
     matches = bank[word.lower()].copy()
     if skip is not None and 0 <= skip <= 3:
@@ -149,7 +151,7 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
         return
 
     # if the current path won't reach the end word in the optimal, stop
-    if current_path_length >= optimal - 2 and find_green(current_word) == 0:
+    if current_path_length >= optimal - 2 and find_green(current_word) <= 1:
         return True
 
     # solution is found
@@ -202,7 +204,6 @@ def solve(current_word: str, current_path_length: int = 0, index_just_changed: i
             break
 
         # many (if solved: return)'s all across function
-        # to allow immediate return to main()
         if solved: 
             return
 
