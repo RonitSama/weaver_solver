@@ -43,8 +43,8 @@ class SiteSolver:
 
     def __init__(self) -> None:
         '''Opens Weaver in Chrome and sets up for solving'''
-
-        chrome_driver_path = '/path/to/chrome/driver'
+        
+        chrome_driver_path = '/path/to/chromedriver'
         chr_options = Options()
 
         # keeps Chrome open after end of program
@@ -69,7 +69,9 @@ class SiteSolver:
                 self.__enter.click()
                 break
             except:
-                pass
+                ad = self.__driver.find_element(By.XPATH, '/html/body/div[2]/div[2]')
+                if ad:
+                    ad.click()
 
     def __type_key(self, char: str) -> None:
         '''Types a letter into website
