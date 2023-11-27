@@ -138,6 +138,11 @@ class SiteSolver:
         '''Return the word that Weaver doesn't accept'''
         return self.__driver.find_elements(
             By.CSS_SELECTOR, 'div.inputRowsContainer div.row')[-1].text.replace('\n', '')
+    
+    def quit(self):
+        '''Close Chrome early -- only used for errors'''
+        
+        self.__driver.quit()
 
     @property
     def start(self):
