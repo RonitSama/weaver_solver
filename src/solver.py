@@ -29,7 +29,7 @@ def main():
     n - allows user to input custom words, must be 4 letters each
     t - solves today's challenge only
     '''
-    auto = True if ans.lower() == 'y' or ans.lower() == 'a' else False
+    auto = True if (ans.lower() == 'y' or ans.lower() == 'a') else False
     if auto or (ans == 't'):
         solver = SiteSolver()
 
@@ -44,19 +44,23 @@ def main():
         if auto or (ans == 't'):
             start_word = solver.start
             end_word = solver.end
+            if ans == 't'and (len(start_word) != 4 or len(end_word) != 4):
+                print("Unfortunately, the current challenge is unsolvable "
+                      "because the words are more than 4 letters long.")
+                solver.quit()
+                break
         else:
             start_word = input('Starting word:  ').upper()
-            end_word = input('Ending word:    ').upper()
-            assert len(start_word) == 4 and len(end_word) == 4, \
-                "Both words must be 4 characters in length."
+            end_word = input('Ending word:  ').upper()
+            if len(start_word) != 4 or len(end_word) != 4:
+                from sys import exit
+                exit("\nBoth words must be 4 characters in length.")
 
         root = None
         root = Node(start_word, 0, True)
 
         # solve
         solve(start_word, 0)
-        if hasattr(solve, 'recursion'):
-            del solve.recursion
 
         # found optimal goes in terminal
         print(len(root))
