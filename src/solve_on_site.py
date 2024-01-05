@@ -56,38 +56,6 @@ class SiteSolver:
 
         self.__setup()
 
-    def __type_word(self, word: str) -> None:
-        '''Types provided word into website
-
-        Helper method
-        '''
-
-        for letter in word:
-            self.__type_key(letter)
-        while True:
-            try:
-                self.__enter.click()
-                break
-            except:
-                ad = self.__driver.find_element(By.XPATH, '/html/body/div[2]/div[2]')
-                if ad:
-                    ad.click()
-
-    def __type_key(self, char: str) -> None:
-        '''Types a letter into website
-
-        Helper method
-        '''
-
-        for key in self.__keys:
-            if key.text == char:
-                while True:
-                    try:
-                        key.click()
-                        break
-                    except:
-                        pass
-
     def solve(self, solution: list[str]) -> None:
         '''Types out solution
 
@@ -96,21 +64,6 @@ class SiteSolver:
 
         for word in solution:
             self.__type_word(word)
-
-    def __setup(self):
-        '''Locates buttons on website page
-
-        Helper method
-        '''
-        self.__driver.execute_script("window.scrollTo(0, 1080)")
-        self.__keys = self.__driver.find_elements(
-            By.CLASS_NAME, 'characterButton')
-        self.__enter = self.__driver.find_element(By.CLASS_NAME, 'enterButton')
-        time.sleep(0.3)
-        self.__start = self.__driver.find_element(
-            By.CLASS_NAME, 'startWordRow').text.replace('\n', '')
-        self.__end = self.__driver.find_element(
-            By.CLASS_NAME, 'endWordRow').text.replace('\n', '')
 
     def click_random(self):
         '''Clicks the Random button on website to go to random
@@ -138,11 +91,69 @@ class SiteSolver:
         '''Return the word that Weaver doesn't accept'''
         return self.__driver.find_elements(
             By.CSS_SELECTOR, 'div.inputRowsContainer div.row')[-1].text.replace('\n', '')
-    
+
     def quit(self):
         '''Close Chrome early -- only used for errors'''
-        
+
         self.__driver.quit()
+
+    def __setup(self):
+        '''Locates buttons on website page
+
+        Helper method
+        '''
+        self.__driver.execute_script("window.scrollTo(0, 1080)")
+        self.__keys = self.__driver.find_elements(
+            By.CLASS_NAME, 'characterButton')
+        self.__enter = self.__driver.find_element(By.CLASS_NAME, 'enterButton')
+        time.sleep(0.3)
+        self.__start = self.__driver.find_element(
+            By.CLASS_NAME, 'startWordRow').text.replace('\n', '')
+        self.__end = self.__driver.find_element(
+            By.CLASS_NAME, 'endWordRow').text.replace('\n', '')
+
+    def __type_word(self, word: str) -> None:
+        '''Types provided word into website
+
+        Helper method
+        '''
+
+        for letter in word:
+            self.__type_key(letter)
+        while True:
+            try:
+                self.__enter.click()
+                break
+            except:
+                self.__remove_ad()
+
+    def __type_key(self, char: str) -> None:
+        '''Types a letter into website
+
+        Helper method
+        '''
+
+        for key in self.__keys:
+            if key.text == char:
+                while True:
+                    try:
+                        key.click()
+                        break
+                    except:
+                        self.__remove_ad()
+
+    def __remove_ad(self):
+        '''Removes ad if there is one
+
+        Helper method
+        '''
+        try:
+            ad = self.__driver.find_element(By.XPATH,
+                                            '/html/body/div[4]/div[2]')
+            if ad:
+                ad.click()
+        except:
+            return
 
     @property
     def start(self):
